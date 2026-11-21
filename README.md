@@ -87,4 +87,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to view th
 npm run build
 npm run start
 ```
->>>>>>> 2528008 (Initial commit: TMJ & Sleep Therapy Next.js and TypeScript repository)
+
+---
+
+## 🚀 Automatic Deployment on Vercel (Continuous Deployment)
+
+This repository is pre-configured with `vercel.json` for seamless continuous deployment from GitHub.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/surishek17/TMJ)
+
+### How to Enable Auto-Deploy in 2 Clicks:
+
+1. Click the **Deploy with Vercel** button above (or visit [vercel.com/new](https://vercel.com/new)).
+2. Under **Import Git Repository**, select your connected repository: `surishek17/TMJ`.
+3. Click **Deploy**.
+
+**That's it!** Once connected:
+- Every `git push origin main` automatically triggers a zero-downtime production deployment on Vercel.
+- Pull requests automatically receive instant preview deployment links.
