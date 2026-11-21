@@ -1,151 +1,159 @@
-"use client";
-
-import React, { useState } from "react";
-import { Wind, Activity, HeartHandshake, CheckCircle2 } from "lucide-react";
+import React from "react";
 
 export default function ManagementFramework() {
-  const [activePillar, setActivePillar] = useState<number>(0);
+  const area1 = [
+    {
+      title: "Oral Appliance Therapy — When Appropriate",
+      desc: "Different oral appliances are used for different clinical purposes during NIGHTTIME. In selected patients, an individually prescribed appliance may form part of the management of jaw symptoms. For patients with an appropriately diagnosed sleep-related breathing disorder, a mandibular advancement appliance may also be considered where clinically suitable. It may also alter or reduce sleep-bruxism activity in some patients. Potential benefits, limitations and relevant side effects are discussed before treatment.",
+    },
+    {
+      title: "Nasal & ENT Assessment — When Indicated",
+      desc: "Persistent nasal obstruction may affect breathing and sleep quality. When the history or examination suggests a significant nasal or upper-airway problem, we may recommend evaluation by an ear, nose and throat (ENT) specialist or another medical clinician. Addressing nasal obstruction can be an important component of broader sleep or breathing management.",
+    },
+    {
+      title: "Breathing Retraining",
+      desc: "In selected patients with dysfunctional breathing patterns or persistent mouth-breathing behaviours, appropriately supervised breathing retraining may be considered as part of an integrated management approach.",
+    },
+    {
+      title: "Orofacial Myofunctional Therapy",
+      desc: "Orofacial myofunctional therapy involves exercises and behavioural strategies relating to tongue posture, lips, cheeks and other orofacial muscles. It is not indicated for every patient with TMD, but may be considered where clinical assessment identifies specific orofacial muscle behaviours that may be relevant to care.",
+    },
+  ];
 
-  const pillars = [
+  const area2 = [
     {
-      title: "Breathing & Sleep",
-      icon: Wind,
-      badge: "Nocturnal Support",
-      summary: "Restoring airway stability and night-time physiologic recovery to reduce sleep bruxism and joint strain.",
-      treatments: [
-        {
-          name: "Oral Appliance Therapy (Nighttime)",
-          desc: "Different custom oral appliances are used for specific clinical purposes during night-time sleep. In selected patients, individually prescribed appliances protect dental structures and decompress the joint. For patients with sleep-related breathing disorders, mandibular advancement devices maintain open airway patency."
-        },
-        {
-          name: "Nasal & ENT Assessment",
-          desc: "Persistent nasal obstruction impairs normal nasal breathing and induces mouth-breathing compensations. When indicated, referral to Ear, Nose and Throat (ENT) specialists helps address upper airway resistance without unnecessary surgery."
-        },
-        {
-          name: "Breathing Retraining",
-          desc: "Supervised breathing retraining exercises in selected patients to transition from chronic shallow mouth breathing to functional diaphragmatic nasal breathing."
-        },
-        {
-          name: "Orofacial Myofunctional Therapy",
-          desc: "Targeted exercise protocols addressing correct resting tongue posture on the palate, lip seal, and facial muscle tone to support normal craniofacial mechanics."
-        }
-      ]
+      title: "TMJ Physiotherapy",
+      desc: "TMJ Physiotherapy may help selected people with TMD, particularly where muscle- or movement-related factors are prominent. Where appropriate, we can work closely with experienced physiotherapists to coordinate care.",
     },
     {
-      title: "Jaw Pain & Function",
-      icon: Activity,
-      badge: "Daytime & Biomechanical",
-      summary: "Relieving muscle hyperactivity, restoring comfortable range of opening, and promoting tissue healing.",
-      treatments: [
-        {
-          name: "TMJ Physiotherapy",
-          desc: "Targeted manual therapy, jaw mobilisation, postural correction, and home exercise routines guided by experienced craniofacial physiotherapists to restore joint mechanics."
-        },
-        {
-          name: "Daytime Oral Appliances",
-          desc: "Selected patients may benefit from custom daytime splints designed to interrupt unconscious awake-clenching habits and reduce muscular fatigue during stressful work periods."
-        },
-        {
-          name: "Nutritional & Medical Management",
-          desc: "Dietary optimization, anti-inflammatory support, and investigation of nutritional deficiencies (e.g., magnesium, Vitamin D) influencing muscle recovery and pain tolerance."
-        },
-        {
-          name: "Injectables, Dry Needling, Lasers",
-          desc: "Therapies such as botulinum toxin (Botox) for intractable masseter spasm, trigger point dry needling, prolotherapy, PRP, and Low-Level Laser Therapy (LLLT) for selected refractory indications."
-        },
-        {
-          name: "Multidisciplinary Collaboration",
-          desc: "Close coordination with medical practitioners, pain specialists, neurologists, and dental colleagues when symptoms require collaborative multidisciplinary input."
-        }
-      ]
+      title: "Oral Appliances (Daytime)",
+      desc: "Some patients may benefit from an individually prescribed oral appliance as part of conservative TMD management during DAYTIME. The design and purpose of an appliance depend on whether it is intended to protect the teeth, manage muscle tenderness, support the joint or assist with daytime jaw habits. Because different appliances serve different functions, recommendations are made following thorough clinical assessment.",
     },
     {
-      title: "Stress, Behaviour & Pain Regulation",
-      icon: HeartHandshake,
-      badge: "Biopsychosocial",
-      summary: "Calming nervous system hyper-excitability and mitigating chronic pain cycles.",
-      treatments: [
-        {
-          name: "Psychology & Persistent Pain Care",
-          desc: "Collaborative cognitive and behavioural strategies with pain psychologists to address pain catastrophizing, central nervous system sensitization, and health anxiety."
-        },
-        {
-          name: "Relaxation, Mindfulness & Meditation",
-          desc: "Complementary techniques that down-regulate sympathetic fight-or-flight drive, reduce awake clenching, and promote autonomic nervous balance."
-        }
-      ]
-    }
+      title: "Nutritional Supplements and Medical Management",
+      desc: "Sleep quality, physical activity, diet, medication use and general health can influence pain and recovery. Where clinically relevant, these factors may be considered alongside other management options.",
+    },
+    {
+      title: "Multidisciplinary Pain Management",
+      desc: "Persistent pain can become complex. Where symptoms continue despite appropriate initial management, collaboration with other healthcare professionals may be recommended. Depending on the circumstances, this could include a physiotherapist, medical practitioner, pain specialist, neurologist, psychologist or another appropriately qualified clinician.",
+    },
+    {
+      title: "Injectables, Dry Needling, Lasers",
+      desc: "Therapies such as B. Tox, Prolotherapy, PRP, Acupuncture, Low Level Laser therapy may help selected people with TMD. These are separate clinical indications, and the recommended treatment depends on the individual diagnosis.",
+    },
+  ];
+
+  const area3 = [
+    {
+      title: "Psychology & Persistent Pain",
+      desc: "Persistent pain can affect sleep, mood, concentration and quality of life. At the same time, stress, anxiety, poor sleep and other psychological factors can influence how the nervous system processes pain. Where appropriate, working with a psychologist or other suitably qualified clinician may form part of multidisciplinary persistent-pain care. This does not imply that the pain is imagined or purely psychological.",
+    },
+    {
+      title: "Relaxation, Mindfulness and Meditation",
+      desc: "Relaxation techniques, mindfulness, meditation, exercise or other stress-management approaches may help some people manage stress and persistent pain. These strategies are complementary components of care rather than substitutes for appropriate diagnosis and treatment.",
+    },
   ];
 
   return (
-    <section id="management" className="py-16 lg:py-24 bg-white border-b border-brand-border/40">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="medical-subheading">Our Integrated Approach</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-dark mb-4">
-            How we manage TMJ pain
+    <section id="how-we-manage" className="py-16 lg:py-24 bg-[#171717] text-white border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="max-w-3xl space-y-4 mb-16">
+          <span className="eyebrow-dark">Our Integrated Approach</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-light text-white leading-[1.12]">
+            How we <em className="italic font-light">manage TMJ pain</em>
           </h2>
-          <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            TMD can involve more than one contributing factor, which means management is not necessarily the same for every person. Where possible, management generally begins with conservative, reversible approaches.
-          </p>
-        </div>
-
-        {/* Pillar Selection Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {pillars.map((p, idx) => {
-            const Icon = p.icon;
-            const isActive = activePillar === idx;
-            return (
-              <button
-                key={idx}
-                onClick={() => setActivePillar(idx)}
-                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-medium text-xs sm:text-sm transition-all ${
-                  isActive
-                    ? "bg-[#1A1A1A] text-white shadow-elevated"
-                    : "bg-brand-sand/70 text-brand-dark hover:bg-brand-sand border border-brand-border/70"
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? "text-brand-taupe" : "text-brand-muted"}`} />
-                <span>Pillar 0{idx + 1}: {p.title}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Selected Pillar Content */}
-        <div className="sand-card border-brand-border p-6 sm:p-8 lg:p-10 bg-gradient-to-b from-brand-sand/60 to-brand-cream/60">
-          <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-brand-border/60 gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-taupe bg-white px-3 py-1 rounded border border-brand-border">
-                {pillars[activePillar].badge}
-              </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-brand-dark mt-2">
-                {pillars[activePillar].title}
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm text-brand-muted max-w-md">
-              {pillars[activePillar].summary}
+          <div className="space-y-2 text-[16px] sm:text-[17px] text-white/70 leading-[1.75] font-light">
+            <p>
+              TMD can involve more than one contributing factor, which means management is not necessarily the same for every person.
+            </p>
+            <p>
+              Your treatment plan depends on your diagnosis, symptoms, contributing factors, general health and individual needs.
+            </p>
+            <p className="text-white font-medium">
+              Not every patient requires every treatment described below.
+            </p>
+            <p>
+              Where possible, management generally begins with appropriate conservative and reversible approaches.
             </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {pillars[activePillar].treatments.map((t, tIdx) => (
-              <div key={tIdx} className="bg-white p-5 rounded-xl border border-brand-border/70 shadow-soft">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle2 className="w-4 h-4 text-brand-taupe flex-shrink-0" />
-                  <h4 className="font-serif text-lg font-bold text-brand-dark">
-                    {t.name}
-                  </h4>
+        {/* 3 Major Areas */}
+        <div className="space-y-16">
+          {/* Area 01 */}
+          <div className="space-y-6">
+            <div className="border-b border-white/10 pb-4">
+              <span className="text-[12px] font-sans font-medium uppercase tracking-[1.6px] text-[#9B8A78]">
+                Area 01
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-light text-white mt-1">
+                Breathing &amp; Sleep
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {area1.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[#242424] rounded-[14px] p-6 border border-white/10 space-y-3"
+                >
+                  <h4 className="text-[16px] font-medium text-white">{item.title}</h4>
+                  <p className="text-[14px] text-white/70 font-light leading-[1.7]">
+                    {item.desc}
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-brand-muted leading-relaxed">
-                  {t.desc}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-brand-border/60 text-xs text-brand-muted text-center italic">
-            Not every patient requires every treatment described above. Prescriptions are tailored following clinical diagnosis.
+          {/* Area 02 */}
+          <div className="space-y-6">
+            <div className="border-b border-white/10 pb-4">
+              <span className="text-[12px] font-sans font-medium uppercase tracking-[1.6px] text-[#9B8A78]">
+                Area 02
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-light text-white mt-1">
+                Jaw Pain &amp; Function
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {area2.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[#242424] rounded-[14px] p-6 border border-white/10 space-y-3"
+                >
+                  <h4 className="text-[16px] font-medium text-white">{item.title}</h4>
+                  <p className="text-[14px] text-white/70 font-light leading-[1.7]">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Area 03 */}
+          <div className="space-y-6">
+            <div className="border-b border-white/10 pb-4">
+              <span className="text-[12px] font-sans font-medium uppercase tracking-[1.6px] text-[#9B8A78]">
+                Area 03
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-light text-white mt-1">
+                Stress, Behaviour &amp; Pain Regulation
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {area3.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[#242424] rounded-[14px] p-6 border border-white/10 space-y-3"
+                >
+                  <h4 className="text-[16px] font-medium text-white">{item.title}</h4>
+                  <p className="text-[14px] text-white/70 font-light leading-[1.7]">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
