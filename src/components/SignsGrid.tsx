@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ChevronLeft, ChevronRight, ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ClinicalSign {
   id: string;
@@ -100,24 +100,28 @@ export default function SignsGrid() {
     setSlideIndex((prev) => Math.max(prev - 1, 0));
   };
 
-  // Dynamic width calculation ensuring visible cards sum to exactly 100%
+  // Dynamic width calculation ensuring visible cards sum to exactly 100% of viewport
+  // Track has width 150% (holds 9 cards where 6 fit 100% of viewport)
+  // When unhovered: each card = (100% / 9) = 11.1111% of track => 11.1111% * 1.5 = 16.6667% of viewport (exactly 6 cards!)
+  // When hovered: hovered card = 18.6667% of track (28% of viewport)
+  // Other 5 visible cards = 9.6% of track (14.4% of viewport) => 18.6667% + 5 * 9.6% = 66.6667% of track = 100% of viewport!
   const getCardWidth = (idx: number) => {
     if (hoveredIdx === null) {
-      return "16.6666%";
+      return "11.1111%";
     }
     const isHoveredVisible = hoveredIdx >= slideIndex && hoveredIdx < slideIndex + VISIBLE_COUNT;
     if (!isHoveredVisible) {
-      return "16.6666%";
+      return "11.1111%";
     }
     // Hovered card expands smoothly
     if (idx === hoveredIdx) {
-      return "28.5%";
+      return "18.6667%";
     }
-    // Other 5 visible cards contract smoothly: (100% - 28.5%) / 5 = 14.3%
+    // Other 5 visible cards contract smoothly: (66.6667% - 18.6667%) / 5 = 9.6%
     if (idx >= slideIndex && idx < slideIndex + VISIBLE_COUNT) {
-      return "14.3%";
+      return "9.6%";
     }
-    return "16.6666%";
+    return "11.1111%";
   };
 
   const scrollMobile = (direction: "left" | "right") => {
@@ -137,84 +141,41 @@ export default function SignsGrid() {
     >
       {/* Header Container (Matching Spa Dental Luxury Header Layout) */}
       <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 mb-10 sm:mb-14">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
-          <div className="max-w-3xl space-y-3.5">
-            <span className="text-[11px] font-sans uppercase tracking-[0.2em] text-[#9B8A78] font-medium block">
-              Recognising Possible Bruxism
-            </span>
-            <h2 className="text-3xl sm:text-5xl lg:text-[54px] font-serif font-light text-white leading-[1.08] tracking-tight uppercase">
-              Signs that may be associated with{" "}
-              <span className="italic font-light text-[#E8E4DF]">clenching or grinding.</span>
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-400 font-light leading-relaxed max-w-2xl pt-1">
-              Bruxism can sometimes be associated with changes to the teeth, jaw muscles, and surrounding tissues.
-              However, none of the findings below confirms bruxism on its own, and many can occur for reasons unrelated
-              to grinding or clenching.
-            </p>
-          </div>
-
-          {/* Right Action Header: Slide Controls + Luxury Pill CTA */}
-          <div className="shrink-0 flex items-center gap-4">
-            {/* Slide Navigation Buttons (Displays 6 on screen, slides to reveal rest) */}
-            <div className="hidden lg:flex items-center gap-2 pr-2 border-r border-white/15">
-              <span className="text-xs text-neutral-400 font-mono tracking-wider mr-2">
-                {slideIndex + 1}–{slideIndex + VISIBLE_COUNT} of {signs.length}
-              </span>
-              <button
-                onClick={prevSlide}
-                disabled={slideIndex === 0}
-                className="w-9 h-9 rounded-[6px] border border-white/15 bg-[#141416] hover:bg-[#202024] text-white flex items-center justify-center transition-all disabled:opacity-25 disabled:cursor-not-allowed"
-                aria-label="Previous clinical signs"
-                title="Slide previous"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={nextSlide}
-                disabled={slideIndex === maxSlide}
-                className="w-9 h-9 rounded-[6px] border border-white/15 bg-[#141416] hover:bg-[#202024] text-white flex items-center justify-center transition-all disabled:opacity-25 disabled:cursor-not-allowed"
-                aria-label="Next clinical signs"
-                title="Slide next (reveal remaining cards)"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Explore All CTA Button */}
-            <Link
-              href="#booking-section"
-              className="inline-flex items-center rounded-[6px] overflow-hidden bg-[#1C1C1F] hover:bg-[#252529] border border-white/15 hover:border-white/30 text-white transition-all shadow-md group"
-            >
-              <span className="px-5 py-3 text-xs sm:text-[13px] font-medium tracking-wide">
-                Explore all 9 clinical signs
-              </span>
-              <span className="bg-[#9B8A78] group-hover:bg-[#B3A08D] text-black w-10 h-10 flex items-center justify-center transition-colors">
-                <ArrowUpRight className="w-4 h-4 stroke-[2.2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </span>
-            </Link>
-          </div>
+        <div className="max-w-3xl space-y-3.5">
+          <span className="text-[11px] font-sans uppercase tracking-[0.2em] text-[#9B8A78] font-medium block">
+            Recognising Possible Bruxism
+          </span>
+          <h2 className="text-3xl sm:text-5xl lg:text-[54px] font-serif font-light text-white leading-[1.08] tracking-tight uppercase">
+            Signs that may be associated with{" "}
+            <span className="italic font-light text-[#E8E4DF]">clenching or grinding.</span>
+          </h2>
+          <p className="text-sm sm:text-base text-neutral-400 font-light leading-relaxed max-w-2xl pt-1">
+            Bruxism can sometimes be associated with changes to the teeth, jaw muscles, and surrounding tissues.
+            However, none of the findings below confirms bruxism on its own, and many can occur for reasons unrelated
+            to grinding or clenching.
+          </p>
         </div>
       </div>
 
-      {/* DESKTOP: 6 Cards on Screen at a Time with Hover Highlight & Faded Siblings */}
+      {/* DESKTOP: Exactly 6 Cards on Screen at a Time with Smooth Sliding to reveal the rest */}
       <div className="hidden lg:block w-full relative">
         {/* Floating Side Slide Controls */}
         {slideIndex > 0 && (
           <button
             onClick={prevSlide}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/85 border border-white/20 text-white flex items-center justify-center backdrop-blur-md hover:bg-[#9B8A78] hover:text-black transition-all shadow-xl"
-            aria-label="Slide previous"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/85 border border-white/25 text-white flex items-center justify-center backdrop-blur-md hover:bg-[#9B8A78] hover:text-black hover:scale-105 transition-all duration-300 shadow-2xl cursor-pointer"
+            aria-label="Slide to previous clinical signs"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
         )}
         {slideIndex < maxSlide && (
           <button
             onClick={nextSlide}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/85 border border-white/20 text-white flex items-center justify-center backdrop-blur-md hover:bg-[#9B8A78] hover:text-black transition-all shadow-xl"
-            aria-label="Slide next"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/85 border border-white/25 text-white flex items-center justify-center backdrop-blur-md hover:bg-[#9B8A78] hover:text-black hover:scale-105 transition-all duration-300 shadow-2xl cursor-pointer"
+            aria-label="Slide to reveal more clinical signs"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
           </button>
         )}
 
@@ -329,6 +290,23 @@ export default function SignsGrid() {
               );
             })}
           </div>
+        </div>
+
+        {/* Subtle slide step indicators */}
+        <div className="flex items-center justify-center gap-2 mt-6">
+          {Array.from({ length: maxSlide + 1 }).map((_, step) => (
+            <button
+              key={step}
+              onClick={() => {
+                setHoveredIdx(null);
+                setSlideIndex(step);
+              }}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                slideIndex === step ? "w-8 bg-[#9B8A78]" : "w-2.5 bg-white/20 hover:bg-white/40 cursor-pointer"
+              }`}
+              aria-label={`Slide to sign group ${step + 1}`}
+            />
+          ))}
         </div>
       </div>
 
