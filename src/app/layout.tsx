@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#171717]">
         <SmoothScroll>
           <Header />
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow pt-[72px]">{children}</main>
           <Footer />
         </SmoothScroll>
       </body>

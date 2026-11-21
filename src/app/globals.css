@@ -8,6 +8,10 @@
     --font-cormorant: 'Cormorant Garamond', Georgia, serif;
   }
 
+  html {
+    scroll-padding-top: 80px;
+  }
+
   html,
   body {
     max-width: 100%;
