@@ -57,6 +57,19 @@
   margin-bottom: 0.5rem;
 }
 
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.8deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
 @keyframes shimmer-sweep {
   0% {
     filter: drop-shadow(0 0 2px rgba(155, 138, 120, 0.25)) brightness(0.95);
