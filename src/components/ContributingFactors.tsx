@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, ChevronDown, ArrowDown, Sparkles, Activity, ShieldCheck, Check, Layers } from "lucide-react";
+import RotatingSkullViewer from "@/components/RotatingSkullViewer";
 
 interface FactorCard {
   id: string;
@@ -184,27 +185,19 @@ export default function ContributingFactors() {
                 </span>
               </div>
 
-              {/* Realistic 3D Skull Visual with Smooth Floating Animation */}
-              <div className="relative z-10 w-full h-[210px] my-auto flex items-center justify-center animate-float-slow">
-                <Image
-                  src="/images/tmj-skull-header.jpg"
-                  alt="3D anatomical human skull and jaw showing temporomandibular joint with golden studio illumination"
-                  fill
-                  className="object-contain filter drop-shadow-[0_16px_32px_rgba(0,0,0,0.95)] transition-transform duration-700 group-hover:scale-105"
-                  sizes="310px"
-                  priority
+              {/* Realistic 3D Skull Visual with 360° Rotation */}
+              <div className="relative z-10 w-full my-auto">
+                <RotatingSkullViewer
+                  frontImage="/images/tmj-skull-header.jpg"
+                  backImage="/images/tmj-skull-posterior.jpg"
+                  alt="3D anatomical human skull and jaw showing temporomandibular joint"
+                  badgeText="3D Lateral TMJ"
+                  accentColor="gold"
+                  aspectRatio="aspect-[4/3.8]"
+                  showHotspot={true}
+                  hotspotLabel="TMJ Condyle & Disc"
+                  autoRotateSpeed={0.35}
                 />
-
-                {/* Golden Illumination Hotspot over TMJ Condyle & Disc */}
-                <div
-                  className="absolute top-[37%] left-[45%] -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 pointer-events-none"
-                  title="Temporomandibular Joint (Condyle & Disc)"
-                >
-                  <span className="relative flex h-4 w-4">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D8B45C] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-4 w-4 bg-[#D8B45C] border-2 border-black shadow-[0_0_12px_#D8B45C]" />
-                  </span>
-                </div>
               </div>
 
               {/* Bottom Annotation Bar */}
@@ -236,23 +229,24 @@ export default function ContributingFactors() {
                 }}
               >
                 <div>
-                  {/* Top 3D Anatomical Visual Container (Screenshot 2) */}
-                  <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-white/10 bg-[#0E0E0E] mb-6 group-hover:border-[#D8B45C]/30 transition-colors">
-                    <Image
-                      src={factor.img}
+                  {/* 360° 3D Interactive Rotating Skull Viewer */}
+                  <div className="mb-6">
+                    <RotatingSkullViewer
+                      frontImage={factor.img}
+                      backImage={
+                        factor.id === "macro-trauma"
+                          ? "/images/macro-trauma-posterior.jpg"
+                          : "/images/repetitive-loading-posterior.jpg"
+                      }
                       alt={factor.alt}
-                      fill
-                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      badgeText={factor.badge}
+                      accentColor={factor.id === "macro-trauma" ? "cyan" : "gold"}
+                      aspectRatio="aspect-[16/10]"
+                      showHotspot={true}
+                      hotspotLabel={factor.title}
+                      initialAngle={factor.id === "macro-trauma" ? 10 : 345}
+                      autoRotateSpeed={0.4}
                     />
-
-                    {/* Gradient Overlay for Cinematic Depth */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
-
-                    {/* Top Badge */}
-                    <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-[4px] bg-black/75 border border-white/15 backdrop-blur-md text-[10px] font-mono uppercase tracking-wider text-[#D8B45C]">
-                      {factor.badge}
-                    </div>
                   </div>
 
                   {/* Card Header & Content */}
