@@ -188,8 +188,8 @@ export default function ContributingFactors() {
               {/* Realistic 3D Skull Visual with 360° Rotation */}
               <div className="relative z-10 w-full my-auto">
                 <RotatingSkullViewer
-                  frontImage="/images/tmj-skull-header.jpg"
-                  backImage="/images/tmj-skull-posterior.jpg"
+                  frontImage="/images/tmj-skull.png"
+                  backImage="/images/tmj-skull-posterior.png"
                   alt="3D anatomical human skull and jaw showing temporomandibular joint"
                   badgeText="3D Lateral TMJ"
                   accentColor="gold"
@@ -232,11 +232,15 @@ export default function ContributingFactors() {
                   {/* 360° 3D Interactive Rotating Skull Viewer */}
                   <div className="mb-6">
                     <RotatingSkullViewer
-                      frontImage={factor.img}
+                      frontImage={
+                        factor.id === "macro-trauma"
+                          ? "/images/macro-trauma-skull.png"
+                          : "/images/repetitive-loading-skull.png"
+                      }
                       backImage={
                         factor.id === "macro-trauma"
-                          ? "/images/macro-trauma-posterior.jpg"
-                          : "/images/repetitive-loading-posterior.jpg"
+                          ? "/images/macro-trauma-posterior-skull.png"
+                          : "/images/repetitive-loading-posterior-skull.png"
                       }
                       alt={factor.alt}
                       badgeText={factor.badge}

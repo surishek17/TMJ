@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Rotate3d, Play, Pause, Compass, Eye, Sparkles } from "lucide-react";
+import { Rotate3d, Play, Pause } from "lucide-react";
 
 interface RotatingSkullViewerProps {
   frontImage: string;
@@ -39,12 +39,12 @@ export default function RotatingSkullViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
 
-  // Auto-rotation loop using requestAnimationFrame for 60fps smoothness
+  // 60fps auto-rotation loop
   useEffect(() => {
     let lastTime = performance.now();
 
     const loop = (currentTime: number) => {
-      const delta = (currentTime - lastTime) / 16.67; // normalize to 60fps
+      const delta = (currentTime - lastTime) / 16.67;
       lastTime = currentTime;
 
       if (isAutoRotating && !isDragging) {
@@ -63,7 +63,7 @@ export default function RotatingSkullViewer({
     };
   }, [isAutoRotating, isDragging, autoRotateSpeed]);
 
-  // Mouse & Touch Dragging Handlers
+  // Pointer Drag Handlers
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setStartX(e.clientX);
@@ -75,18 +75,16 @@ export default function RotatingSkullViewer({
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) {
-      // Subtle 3D pitch tilt on hover
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         const y = e.clientY - rect.top;
-        const normalizedY = (y / rect.height - 0.5) * -12; // -6deg to +6deg
+        const normalizedY = (y / rect.height - 0.5) * -10; // -5deg to +5deg
         setPitch(normalizedY);
       }
       return;
     }
 
     const deltaX = e.clientX - startX;
-    // 1 pixel = ~0.65 degrees of rotation
     const newAngle = ((startAngle + deltaX * 0.65) % 360 + 360) % 360;
     setAngle(newAngle);
   };
@@ -102,21 +100,25 @@ export default function RotatingSkullViewer({
     }
   };
 
-  // Quick preset angle buttons
   const snapToAngle = (targetAngle: number) => {
     setIsAutoRotating(false);
     setAngle(targetAngle);
   };
 
-  // Normalize angle for lighting calculations
   const normalizedAngle = Math.round(angle);
-  const lightX = 25 + ((normalizedAngle % 360) / 360) * 50; // moves 25% to 75%
-
   const isCyan = accentColor === "cyan";
   const glowBorder = isCyan ? "border-cyan-500/40" : "border-[#D8B45C]/40";
   const glowText = isCyan ? "text-cyan-400" : "text-[#D8B45C]";
   const glowBg = isCyan ? "bg-cyan-500" : "bg-[#D8B45C]";
-  const glowShadow = isCyan ? "shadow-[0_0_15px_rgba(6,182,212,0.6)]" : "shadow-[0_0_15px_rgba(216,180,92,0.6)]";
+  const glowShadow = isCyan
+    ? "shadow-[0_0_15px_rgba(6,182,212,0.6)]"
+    : "shadow-[0_0_15px_rgba(216,180,92,0.6)]";
+
+  // Dynamic light calculation based on rotation
+  const lightX = 25 + ((normalizedAngle % 360) / 360) * 50;
+
+  // Pedestal shadow perspective scaling as skull rotates
+  const shadowScale = 0.85 + Math.abs(Math.sin((angle * Math.PI) / 180)) * 0.25;
 
   return (
     <div
@@ -126,12 +128,30 @@ export default function RotatingSkullViewer({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       className={`relative w-full ${aspectRatio} rounded-xl overflow-hidden border border-white/10 bg-[#0B0B0B] group/viewer select-none cursor-grab active:cursor-grabbing transition-colors duration-300 hover:${glowBorder}`}
-      style={{ perspective: "1200px" }}
+      style={{ perspective: "1000px" }}
     >
-      {/* 1. Cinematic Studio Gradient & Depth Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30 pointer-events-none z-10" />
+      {/* 1. FIXED STATIONARY BACKGROUND (Never rotates) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-[#0D0D0D] to-[#121212] pointer-events-none" />
+      
+      {/* Subtle Studio Pedestal Glow */}
+      <div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-48 h-12 rounded-full blur-[20px] pointer-events-none opacity-40 transition-all duration-300"
+        style={{
+          background: isCyan
+            ? "radial-gradient(ellipse at center, rgba(6,182,212,0.45) 0%, transparent 70%)"
+            : "radial-gradient(ellipse at center, rgba(216,180,92,0.45) 0%, transparent 70%)",
+        }}
+      />
 
-      {/* 2. Top Bar: Badge & 360° Angle Dial */}
+      {/* Stationary Circular Pedestal Ring on Floor */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-44 h-8 rounded-full border border-white/[0.08] pointer-events-none flex items-center justify-center opacity-60">
+        <div
+          className="w-32 h-4 rounded-full bg-black/60 blur-[4px] transition-transform duration-100"
+          style={{ transform: `scaleX(${shadowScale})` }}
+        />
+      </div>
+
+      {/* 2. FIXED STATIONARY TOP BAR: Badge & 360° Angle Dial */}
       <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
         {badgeText && (
           <div className="px-2.5 py-1 rounded-[4px] bg-black/80 border border-white/15 backdrop-blur-md text-[10px] font-mono uppercase tracking-wider text-neutral-300 flex items-center gap-1.5">
@@ -148,95 +168,98 @@ export default function RotatingSkullViewer({
         </div>
       </div>
 
-      {/* 3. 3D Rotating Skull Object Container (Preserves 3D Space) */}
-      <div
-        className="w-full h-full relative"
-        style={{
-          transformStyle: "preserve-3d",
-          transform: `rotateY(${angle}deg) rotateX(${pitch}deg)`,
-          transition: isDragging ? "none" : "transform 0.08s linear",
-        }}
-      >
-        {/* FRONT FACE (0° - 90°, 270° - 360°) */}
+      {/* 3. ONLY THE FLOATING SKULL ROTATES (Isolated from Background) */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
-          className="absolute inset-0 w-full h-full"
+          className="relative w-[78%] h-[82%] flex items-center justify-center"
           style={{
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "translateZ(1px)",
+            transformStyle: "preserve-3d",
+            transform: `rotateY(${angle}deg) rotateX(${pitch}deg)`,
+            transition: isDragging ? "none" : "transform 0.08s linear",
           }}
         >
-          <Image
-            src={frontImage}
-            alt={`${alt} - Front View`}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-
-          {/* Dynamic Specular Studio Lighting Reflection that sweeps with rotation */}
+          {/* FRONT SKULL (0° - 90°, 270° - 360°) */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 w-full h-full flex items-center justify-center"
             style={{
-              background: `radial-gradient(circle 320px at ${lightX}% 45%, ${
-                isCyan ? "rgba(56, 189, 248, 0.26)" : "rgba(216, 180, 92, 0.26)"
-              } 0%, transparent 70%)`,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "translateZ(1px)",
             }}
-          />
-
-          {/* Floating 3D TMJ Hotspot Pin in Front */}
-          {showHotspot && (
-            <div
-              className="absolute top-[44%] left-[48%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
-              style={{ transform: "translateZ(20px)" }}
-            >
-              <span className="relative flex h-3.5 w-3.5">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${glowBg} opacity-75`} />
-                <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${glowBg} border border-black ${glowShadow}`} />
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* BACK FACE (90° - 270°) */}
-        <div
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg) translateZ(1px)",
-          }}
-        >
-          <Image
-            src={backImage}
-            alt={`${alt} - Posterior View`}
-            fill
-            className="object-cover brightness-95 contrast-105"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-
-          {/* Posterior Specular Light Overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `radial-gradient(circle 320px at ${100 - lightX}% 45%, ${
-                isCyan ? "rgba(56, 189, 248, 0.24)" : "rgba(216, 180, 92, 0.24)"
-              } 0%, transparent 70%)`,
-            }}
-          />
-
-          {/* Posterior Perspective Tag */}
-          <div
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded bg-black/80 border border-white/20 text-[9px] font-mono uppercase tracking-wider text-white/80 pointer-events-none"
-            style={{ transform: "translateZ(15px)" }}
           >
-            Posterior Cranial Aspect (180°)
+            <div className="relative w-full h-full">
+              <Image
+                src={frontImage}
+                alt={`${alt} - Front View`}
+                fill
+                className="object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)]"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+
+              {/* Dynamic Specular Highlight sweep across the rotating skull bone */}
+              <div
+                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70"
+                style={{
+                  background: `radial-gradient(circle 220px at ${lightX}% 40%, ${
+                    isCyan ? "rgba(56, 189, 248, 0.35)" : "rgba(216, 180, 92, 0.35)"
+                  } 0%, transparent 65%)`,
+                }}
+              />
+
+              {/* Floating TMJ Hotspot on the Skull's Condyle */}
+              {showHotspot && (
+                <div
+                  className="absolute top-[48%] left-[45%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
+                  style={{ transform: "translateZ(25px)" }}
+                  title={hotspotLabel}
+                >
+                  <span className="relative flex h-3.5 w-3.5">
+                    <span
+                      className={`animate-ping absolute inline-flex h-full w-full rounded-full ${glowBg} opacity-75`}
+                    />
+                    <span
+                      className={`relative inline-flex rounded-full h-3.5 w-3.5 ${glowBg} border border-black ${glowShadow}`}
+                    />
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* BACK SKULL (90° - 270°) */}
+          <div
+            className="absolute inset-0 w-full h-full flex items-center justify-center"
+            style={{
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg) translateZ(1px)",
+            }}
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src={backImage}
+                alt={`${alt} - Posterior View`}
+                fill
+                className="object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] brightness-95 contrast-105"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+
+              {/* Posterior Dynamic Specular Highlight */}
+              <div
+                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70"
+                style={{
+                  background: `radial-gradient(circle 220px at ${100 - lightX}% 40%, ${
+                    isCyan ? "rgba(56, 189, 248, 0.35)" : "rgba(216, 180, 92, 0.35)"
+                  } 0%, transparent 65%)`,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 4. Bottom Controls: Quick Angle Presets & Auto-Spin Play/Pause */}
+      {/* 4. FIXED STATIONARY BOTTOM CONTROLS */}
       <div className="absolute bottom-2.5 left-3 right-3 z-30 flex items-center justify-between pointer-events-auto">
         {/* Play/Pause 360 Spin */}
         <button
@@ -301,11 +324,11 @@ export default function RotatingSkullViewer({
 
         {/* Drag Hint */}
         <span className="text-[9px] font-mono text-white/40 hidden sm:inline-block pointer-events-none">
-          Drag to 3D Orbit
+          Drag Skull to Rotate
         </span>
       </div>
 
-      {/* 5. Interactive Scrub Bar on Bottom Border */}
+      {/* 5. Fixed Stationary Progress Line */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 z-30">
         <div
           className={`h-full ${glowBg} transition-all duration-75`}
